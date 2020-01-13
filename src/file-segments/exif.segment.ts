@@ -5,7 +5,7 @@ import BufferReader from '../utils/buffer-reader';
 import { numberToBuffer } from '../utils/buffer-utils';
 import { Segment } from './types';
 
-const EXIF_HEADER = Buffer.from('457869660000', 'hex');
+export const EXIF_HEADER = Buffer.from('457869660000', 'hex');
 
 export interface Coordinate {
   latitude: number;
@@ -110,6 +110,22 @@ export default class ExifSegment implements Segment {
     }
 
     return Buffer.from(makerNoteTag.rawValue as any);
+  }
+
+  getUserComment(): string | null {
+    const exifTag = this.tagManager.findTagById(EXIF_IFD_POINTER_MARKER);
+
+    if (!exifTag || !(exifTag.rawValue instanceof TagManager)) {
+      return null;
+    }
+
+    const tag = exifTag.rawValue.findTagById(37510);
+
+    if (!tag || !Array.isArray(tag.rawValue)) {
+      return null;
+    }
+
+    return Buffer.from(tag.rawValue.slice(8) as number[]).toString();
   }
 
   setUserComment(value: string): this {

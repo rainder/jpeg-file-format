@@ -1,6 +1,6 @@
 import { FileFormat } from './types';
 import { Segment } from './file-segments/types';
-import ExifSegment from './file-segments/exif.segment';
+import ExifSegment, { EXIF_HEADER } from './file-segments/exif.segment';
 import RawSegment from './file-segments/raw.segment';
 import ScanSegment from './file-segments/scan.segment';
 import BufferReader from './utils/buffer-reader';
@@ -90,6 +90,29 @@ export default class JPEGFileFormat implements FileFormat {
     return this.segments.find((segment) => {
       return segment.id === segmentMarker;
     }) || null;
+  }
+
+  /**
+   *
+   * @returns {ExifSegment}
+   */
+  findOrCreateExifSegment(): ExifSegment {
+    const exifSegment = this.findSegment(JPEGFileFormat.SEGMENT_MARKER_EXIF);
+
+    if (exifSegment) {
+      return exifSegment;
+    }
+
+    const newSegment = new ExifSegment(JPEGFileFormat.SEGMENT_MARKER_EXIF, Buffer.concat([
+      EXIF_HEADER,
+      Buffer.from('4D4D002A', 'hex'),
+      Buffer.from('00000008', 'hex'),
+      Buffer.from('0000', 'hex'),
+    ]));
+
+    this.segments.push(newSegment);
+
+    return newSegment;
   }
 
   /**
