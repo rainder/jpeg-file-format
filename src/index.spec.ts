@@ -33,4 +33,13 @@ describe('jpeg file format', () => {
     // expect(jpeg.toBuffer().compare(image)).to.equals(0);
   });
 
+  it('should read image without exif tags', async () => {
+    const jpeg = JPEGFileFormat.load(await loadImage('no-exif.jpg'));
+    const exifSegment = jpeg.findOrCreateExifSegment();
+
+    exifSegment.setUserComment('test');
+
+    // await fs.writeFileSync(filePath('no-exif-out.jpg'), jpeg.toBuffer());
+  });
+
 });

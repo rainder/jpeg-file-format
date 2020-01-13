@@ -105,12 +105,13 @@ export default class JPEGFileFormat implements FileFormat {
 
     const newSegment = new ExifSegment(JPEGFileFormat.SEGMENT_MARKER_EXIF, Buffer.concat([
       EXIF_HEADER,
-      Buffer.from('4D4D002A', 'hex'),
-      Buffer.from('00000008', 'hex'),
-      Buffer.from('0000', 'hex'),
+      Buffer.from('4D4D002A', 'hex'), // bugEnd and 42
+      Buffer.from('00000008', 'hex'), // first IFD Pointer
+      Buffer.from('0000', 'hex'), // length
+      Buffer.from('00000000', 'hex'), // terminator
     ]));
 
-    this.segments.push(newSegment);
+    this.segments.splice(1, 0, newSegment);
 
     return newSegment;
   }
