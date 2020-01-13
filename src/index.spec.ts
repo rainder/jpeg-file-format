@@ -1,17 +1,16 @@
 import { expect } from 'chai';
-import { readFileSync } from 'fs';
+import * as fs from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import pkgDir from 'pkg-dir';
 import JPEGFileFormat from './index';
 
 describe('jpeg file format', () => {
-  const input = path.resolve(__dirname, '../../../../samples/white.jpg');
-  const input2 = path.resolve(__dirname, '../../../../samples/img_1771.jpg');
-  const output = path.resolve(__dirname, '../../../../samples/output.jpg');
-  const loadImage = async (name: string) => readFileSync(path.resolve(pkgDir.sync(__dirname) as string, 'samples', name));
+  const filePath = (name: string) => path.resolve(pkgDir.sync(__dirname) as string, 'samples', name);
+  const loadImage = async (name: string) => readFileSync(filePath(name));
 
   it('should load JPEG', async () => {
-    const image = await loadImage('image1.jpg');
+    const image = await loadImage('image2.jpg');
     const jpeg = JPEGFileFormat.load(image);
 
     // const a = image.toString('hex').toUpperCase();
@@ -26,8 +25,11 @@ describe('jpeg file format', () => {
     //   }
     // }
 
-    console.log(jpeg.findSegment(0xE1)?.getUserComment());
+    console.log(jpeg.findSegment(0xE1)?.setUserComment('helooooooooooooooooooo'));
 
+
+    writeFileSync(filePath('output.jpg'), jpeg.toBuffer());
+    // jpeg.toBuffer();
     // expect(jpeg.toBuffer().compare(image)).to.equals(0);
   });
 

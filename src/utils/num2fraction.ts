@@ -43,7 +43,7 @@ export function num2fraction(num: number | string): {
   numerator: number,
   denominator: number,
 } {
-  if (num === 0 || num === '0') {
+  if (num === 0 || num === '0' || isNaN(num as any)) {
     return {
       numerator: 0,
       denominator: 0,
