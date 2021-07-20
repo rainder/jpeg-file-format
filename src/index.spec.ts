@@ -42,4 +42,12 @@ describe('jpeg file format', () => {
     // await fs.writeFileSync(filePath('no-exif-out.jpg'), jpeg.toBuffer());
   });
 
+  // it('should load jpeg3', async () => {
+  //   const image = await loadImage('image3.jpeg');
+  //   const jpeg = JPEGFileFormat.load(image);
+  //
+  //   console.log(jpeg.findSegment(0xE1)?.setUserComment('helooooooooooooooooooo'));
+  //
+  //   writeFileSync(filePath('output.jpg'), jpeg.toBuffer());
+  // });
 });

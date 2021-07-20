@@ -60,7 +60,7 @@ export function num2fraction(num: number | string): {
     return simpleAnswer;
   }
 
-  const precision = findPrecision(num); //精确度
+  const precision = Math.min(findPrecision(num), 100000); //精确度
   const number = num * precision;
   const gcd = abs(GCD(number, precision));
 
@@ -72,8 +72,14 @@ export function num2fraction(num: number | string): {
   //分数
   // return round(numerator) + '/' + round(denominator);
 
+  const simplifier = (input: number) => {
+    const s = round(input / 2147483647).toString();
+    return s === '0' ? 0 : s.length;
+  };
+  const divisor = Math.max(simplifier(numerator), simplifier(denominator));
+
   return {
-    numerator: round(numerator),
-    denominator: round(denominator),
+    numerator: round(numerator / 10 ** divisor),
+    denominator: round(denominator / 10 ** divisor),
   };
 }
